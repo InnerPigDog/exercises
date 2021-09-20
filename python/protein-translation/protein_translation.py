@@ -1,26 +1,30 @@
-def proteins(strand):
-    protein_dict = {
-        "AUG": "Methionine",
-        "UUU": "Phenylalanine",
-        "UUC": "Phenylalanine",
-        "UUA": "Leucine",
-        "UUG": "Leucine",
-        "UCU": "Serine",
-        "UCC": "Serine",
-        "UCA": "Serine",
-        "UCG":	"Serine",
-        "UAU": "Tyrosine",
-        "UAC":	"Tyrosine",
-        "UGU": "Cysteine",
-        "UGC":	"Cysteine",
-        "UGG":	"Tryptophan"
-    }
-    stop_codons = ["UAA", "UAG", "UGA"]
+CODON_TO_PROTEIN = {
+    "AUG": "Methionine",
+    "UUU": "Phenylalanine",
+    "UUC": "Phenylalanine",
+    "UUA": "Leucine",
+    "UUG": "Leucine",
+    "UCU": "Serine",
+    "UCC": "Serine",
+    "UCA": "Serine",
+    "UCG": "Serine",
+    "UAU": "Tyrosine",
+    "UAC": "Tyrosine",
+    "UGU": "Cysteine",
+    "UGC": "Cysteine",
+    "UGG": "Tryptophan"
+}
+
+STOP_CODONS = {"UAA", "UAG", "UGA"}
+
+
+def proteins(strand: str) -> list[str]:
     protein_seq = []
 
-    # Split strand into 3 character sequences
-    for codon in [strand[i:i+3] for i in range(0, len(strand), 3)]:
-        if codon in stop_codons:
+    # Split RNA strand into 3 character sequences called codons, which correspond to specific proteins.
+    for i in range(0, len(strand), 3):
+        codon = strand[i:i + 3]
+        if codon in STOP_CODONS:
             break
-        protein_seq.append(protein_dict[codon])
+        protein_seq.append(CODON_TO_PROTEIN[codon])
     return protein_seq
