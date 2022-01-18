@@ -16,7 +16,7 @@ def md_to_html_heading(md_line):
     # Headings of level i are exactly i times # in a row, followed by a space and any sequence of characters.
     for j in range(1, 7):
         if re.match('#{%s} (.*)' % j, md_line):
-            return f"<h{j}>{md_line[j + 1:]}</h{j}>"
+            return add_tags_str(md_line[j + 1:], f"h{j}")
     return md_line
 
 
@@ -30,7 +30,7 @@ def md_to_html_lists(markdown):
             # If there is no next line or the next line is not a list element, then the current line is the last
             # list entry
             last_list_entry = "</ul>" if i == len(markdown) - 1 or not is_list_element(markdown[i + 1]) else ""
-            result.append(f"{first_list_entry}<li>{markdown[i][2:]}</li>{last_list_entry}")
+            result.append(f"{first_list_entry}{add_tags_str(markdown[i][2:], 'li')}{last_list_entry}")
         else:
             result.append(markdown[i])
     return result
@@ -42,23 +42,28 @@ def is_list_element(md_line):
 
 
 def md_to_html_bold(md_line):
-    m = re.search(r"(.*)__(.*)__(.*)", md_line)
-    if m:
-        return f"{m.group(1)}<strong>{m.group(2)}</strong>{m.group(3)}"
+    if m := re.search(r"(.*)__(.*)__(.*)", md_line):
+        return add_tags_match(m, "strong") 
     else:
         return md_line
 
 
 def md_to_html_italics(md_line):
-    m = re.search(r"(.*)_(.*)_(.*)", md_line)
-    if m:
-        return f"{m.group(1)}<em>{m.group(2)}</em>{m.group(3)}"
+    if m := re.search(r"(.*)_(.*)_(.*)", md_line):
+        return add_tags_match(m, "em")
     else:
         return md_line
 
 
 def md_to_html_paragraphs(md_line):
     if not re.match('<h|<ul|<li', md_line):
-        return '<p>' + md_line + '</p>'
+        return add_tags_str(md_line, "p")
     else:
         return md_line
+
+
+def add_tags_match(m, tag):
+    return f"{m.group(1)}<{tag}>{m.group(2)}</{tag}>{m.group(3)}"
+
+def add_tags_str(s, tag):
+    return f"<{tag}>{s}</{tag}>"
