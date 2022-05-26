@@ -7,7 +7,7 @@
     "python.testing.unittestArgs": [
         "-v",
         "-s",
-        "./tisbury-treasure-hunt",
+        "./triangle",
         "-p",
         "*test.py"
     ]
